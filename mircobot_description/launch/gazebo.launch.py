@@ -14,7 +14,7 @@ def generate_launch_description():
     display_launch = IncludeLaunchDescription(
                     PythonLaunchDescriptionSource([os.path.join(
                         get_package_share_directory("mircobot_description"),'launch','rsp.launch.py'
-                    )]), launch_arguments={'use_sim_time': 'true','use_ros2_control': 'true'}.items()
+                    )]), launch_arguments={'use_sim_time': 'true','use_ros2_control': 'false'}.items()  # for gazebo simulations only is the better to use gazebo plugin so better movement. use ros2_control for real-robot integration. 
         )
     gazebo_params_path = os.path.join(
                   get_package_share_directory("mircobot_description"),'config','gazebo_params.yaml')
