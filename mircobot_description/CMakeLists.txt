@@ -36,6 +36,9 @@ install(DIRECTORY meshes
 install(DIRECTORY config
   DESTINATION share/${PROJECT_NAME}) 
 
+install(DIRECTORY worlds
+  DESTINATION share/${PROJECT_NAME}) 
+
 #ament_python_install()    # for python 
 
 ament_package()

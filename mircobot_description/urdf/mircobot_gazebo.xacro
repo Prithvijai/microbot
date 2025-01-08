@@ -16,9 +16,9 @@
 
 <gazebo reference="wheel_back_left_1">
   <material>Gazebo/Black</material>
-  <!-- <mu1 value="0.6"/>
-  <mu2 value="0.6"/>
-  <self_collide>true</self_collide> -->
+  <mu1 value="0.5"/>
+  <mu2 value="0.5"/>
+  <self_collide>true</self_collide> 
 </gazebo>
 
 <gazebo reference="wheel_front_right_1">
@@ -30,9 +30,9 @@
 
 <gazebo reference="wheel_back_right_1">
   <material>Gazebo/Black</material>
-  <!-- <mu1 value="0.6"/>
-  <mu2 value="0.6"/>
-  <self_collide>true</self_collide> -->
+   <mu1 value="0.5"/>
+  <mu2 value="0.5"/>
+  <self_collide>true</self_collide> 
 </gazebo>
 
 
