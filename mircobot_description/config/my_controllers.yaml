@@ -23,8 +23,8 @@ diff_cont:
     wheel_radius: 0.03
     #wheels_per_side: 2
 
-    use_stamped_vel: false
-    enable_odom_tf: true
+    # use_stamped_vel: false
+    # enable_odom_tf: true
     # velocity_rolling_window_size: 10
     # cmd_vel_timeout: 0.5
 
