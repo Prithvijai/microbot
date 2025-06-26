@@ -1,9 +1,9 @@
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 import os
 import xacro
 from ament_index_python.packages import get_package_share_directory
@@ -24,6 +24,34 @@ def generate_launch_description():
                     get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py'
                     )]), launch_arguments={'extra_gazebo_args': '--ros-args --params-file ' + gazebo_params_path }.items()
              )
+    
+    joystick = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory("mircobot_description"),'launch','joystick.launch.py'
+                )]), launch_arguments={'use_sim_time': 'true'}.items()
+    )
+
+    twist_mux_params = os.path.join(get_package_share_directory("mircobot_description"),'config','twist_mux.yaml')
+    twist_mux = Node(
+            package="twist_mux",
+            executable="twist_mux",
+            parameters=[twist_mux_params, {'use_sim_time': True}],
+            remappings=[('/cmd_vel_out','/cmd_vel')]
+        )
+    
+    default_world = os.path.join(
+        get_package_share_directory("mircobot_description"),
+        'worlds',
+        'empty.world'
+        )    
+    
+    world = LaunchConfiguration('world')
+
+    world_arg = DeclareLaunchArgument(
+        'world',
+        default_value=default_world,
+        description='World to load'
+        )
 
     urdf_spawn_node = Node(
         package='gazebo_ros',
@@ -49,6 +77,9 @@ def generate_launch_description():
 
     return LaunchDescription([
         display_launch,
+        joystick,
+        twist_mux,
+        world_arg,
         gazebo,
         urdf_spawn_node,
         diff_drive,
