@@ -15,5 +15,6 @@
         "odometry",
         "rviz",
         "xacro"
-    ]
+    ],
+    "ROS2.distro": "humble"
 }

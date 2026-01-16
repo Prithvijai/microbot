@@ -22,7 +22,10 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py'
-                    )]), launch_arguments={'extra_gazebo_args': '--ros-args --params-file ' + gazebo_params_path }.items()
+                    )]), launch_arguments={'extra_gazebo_args': '-s libgazebo_ros_init.so '
+     '-s libgazebo_ros_factory.so '
+     '-s libgazebo_ros_state.so '
+     '-s libgazebo_ros_clock.so ''--ros-args --params-file ' + gazebo_params_path }.items()
              )
     
     joystick = IncludeLaunchDescription(
