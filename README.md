@@ -79,13 +79,8 @@ go to https://github.com/Prithvijai/microbot/issues for new issues.
 
 ---
 
-## Known issue 
 
-* some times lidar cause some warnings 
-`[rviz2-2] [INFO] [1736363085.869472333] [rviz2]: Message Filter dropping message: frame 'lidar_1' at time 18.723 for reason 'the timestamp on the message is earlier than all the data in the transform cache' ` does not cause any issue with simulation
 
-* not fully implementated Nav2 with the robot but may work on it in future. maybe updated in repo while you 
-  
 
 ---
 
