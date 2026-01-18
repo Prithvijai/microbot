@@ -9,8 +9,8 @@
 
 <gazebo reference="wheel_front_left_1">
   <material>Gazebo/Black</material>
-  <mu1 value="0.01"/>
-  <mu2 value="0.01"/>
+  <mu1 value="0.5"/>
+  <mu2 value="0.5"/>
   <!-- <self_collide>true</self_collide> -->
 </gazebo>
 
@@ -23,8 +23,8 @@
 
 <gazebo reference="wheel_front_right_1">
   <material>Gazebo/Black</material>
-  <mu1 value="0.01"/>
-  <mu2 value="0.01"/>
+  <mu1 value="0.5"/>
+  <mu2 value="0.5"/>
   <!-- <self_collide>true</self_collide> -->
 </gazebo>
 
@@ -36,17 +36,18 @@
 </gazebo>
 
 
-<gazebo reference="lidar_1">
+<gazebo reference="lidar">
   <material>Gazebo/Black</material>
 
-  <sensor name="laser" type="ray">
+  <sensor name="laser" type="gpu_lidar">
+    <material>Gazebo/Black</material>
       <pose> 0 0 0 0 0 0 </pose>
-      <visualize>true</visualize>
-      <always_on>true</always_on>
-      <enable_processing>true</enable_processing>
+      <visualize>false</visualize>
+      <!-- <always_on>true</always_on> -->
+      <!-- <enable_processing>true</enable_processing> -->
       <update_rate>10</update_rate>
 
-      <ray>
+      <lidar>
           <scan>
               <horizontal>
                   <samples>360</samples>
@@ -58,25 +59,23 @@
               <min>0.3</min>
               <max>12</max>
           </range>
-      </ray>
-      <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
-        <ros>
-          <argument>~/out:=scan</argument>
-      </ros>
-      <output_type>sensor_msgs/LaserScan</output_type>
-      <frame_name>lidar_1</frame_name>
-      </plugin>
+      </lidar>
+          <topic>scan</topic>
+          <gz_frame_id>lidar</gz_frame_id>
   </sensor>
 </gazebo>  
 
 
 
 <gazebo reference="camera_1">
+  <material>Gazebo/Black</material>
+
     <sensor type="camera" name="camera">
         <pose> 0 0 0 0 0 0 </pose>
         <visualize>true</visualize>
         <update_rate>30.0</update_rate>
         <camera name="head">
+          <camera_info_topic>camera/camera_info</camera_info_topic>
           <horizontal_fov>1.089</horizontal_fov>
           <image>
             <width>640</width>
@@ -88,16 +87,9 @@
             <far>8.0</far>
           </clip>
         </camera>
-        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-          <!-- <alwaysOn>true</alwaysOn>
-          <update_rate>0.0</update_rate> -->
-          <!-- <cameraName>mircobot/camera_optical</cameraName>
-          <imageTopicName>image_raw</imageTopicName>
-          <cameraInfoTopicName>camera_info</cameraInfoTopicName> -->
-          <frame_name>camera_optical</frame_name>
-        </plugin>
+        <topic>camera/image_raw</topic>
+        <gz_frame_id>camera_optical</gz_frame_id>
     </sensor>
 
 </gazebo>
-
 </robot>

@@ -20,7 +20,9 @@ def generate_launch_description():
         executable='teleop_node',
         name='teleop_node',
         parameters=[joy_params],
-        #remappings=[('/cmd_vel','/diff_cont/cmd_vel_unstamped')] no need for remapping if using in gazebo control plugin
+        # remappings=[('/cmd_vel','/cmd_vel_joy')
+                    # ] 
+        # no need for remapping if using in gazebo control plugin
     )
 
 
