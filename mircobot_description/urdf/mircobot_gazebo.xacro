@@ -35,6 +35,15 @@
   <self_collide>true</self_collide> 
 </gazebo>
 
+<gazebo reference="base_link">
+<sensor name="imu_sensor" type="imu">
+    <always_on>1</always_on>
+    <update_rate>1</update_rate>
+    <visualize>true</visualize>
+    <topic>imu</topic>
+</sensor>
+</gazebo>
+
 
 <gazebo reference="lidar">
   <material>Gazebo/Black</material>
@@ -54,13 +63,19 @@
                   <min_angle>-3.14</min_angle>
                   <max_angle>3.14</max_angle>
               </horizontal>
+              <vertical>
+                <samples>16</samples>
+                <resolution>1</resolution>
+                <min_angle>0</min_angle>
+                <max_angle>0.26</max_angle>
+              </vertical>
           </scan>
           <range>
               <min>0.3</min>
               <max>12</max>
           </range>
       </lidar>
-          <topic>scan</topic>
+          <topic>scan_3d</topic>
           <gz_frame_id>lidar</gz_frame_id>
   </sensor>
 </gazebo>  

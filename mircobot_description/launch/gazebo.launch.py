@@ -34,8 +34,15 @@ def generate_launch_description():
     default_world = os.path.join(
         get_package_share_directory("mircobot_description"),
         'worlds',
-        'turtlebot3_house.world'
+        'warehouse.world'
         )    
+    
+    # export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/home/saitama/Downloads/warehouse_simulation_toolkit-master/models
+    # export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/home/saitama/Downloads/warehouse_simulation_toolkit-master/models/workcell/materials/textures
+    # export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:/home/saitama/Downloads/warehouse_simulation_toolkit-master/models/workcell_bin/materials/textures/
+
+    # run this for getting the world properly warehouse.world
+
     
     
     world = LaunchConfiguration('world')
