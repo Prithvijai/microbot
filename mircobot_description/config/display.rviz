@@ -81,7 +81,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        lidar_1:
+        lidar:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -156,7 +156,7 @@ Visualization Manager:
             camera_1:
               camera_optical:
                 {}
-            lidar_1:
+            lidar:
               {}
             wheel_back_left_1:
               {}

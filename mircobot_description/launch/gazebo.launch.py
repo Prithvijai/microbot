@@ -14,19 +14,8 @@ def generate_launch_description():
     display_launch = IncludeLaunchDescription(
                     PythonLaunchDescriptionSource([os.path.join(
                         get_package_share_directory("mircobot_description"),'launch','rsp.launch.py'
-                    )]), launch_arguments={'use_sim_time': 'true','use_ros2_control': 'false'}.items()  # for gazebo simulations only is the better to use gazebo plugin so better movement. use ros2_control for real-robot integration. 
+                    )]), launch_arguments={'use_sim_time': 'true','use_ros2_control': 'true'}.items()  # for gazebo simulations only is the better to use gazebo plugin so better movement. use ros2_control for real-robot integration. 
         )
-    gazebo_params_path = os.path.join(
-                  get_package_share_directory("mircobot_description"),'config','gazebo_params.yaml')
-    
-    gazebo = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py'
-                    )]), launch_arguments={'extra_gazebo_args': '-s libgazebo_ros_init.so '
-     '-s libgazebo_ros_factory.so '
-     '-s libgazebo_ros_state.so '
-     '-s libgazebo_ros_clock.so ''--ros-args --params-file ' + gazebo_params_path }.items()
-             )
     
     joystick = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
@@ -45,8 +34,9 @@ def generate_launch_description():
     default_world = os.path.join(
         get_package_share_directory("mircobot_description"),
         'worlds',
-        'empty.world'
+        'turtlebot3_house.world'
         )    
+    
     
     world = LaunchConfiguration('world')
 
@@ -55,13 +45,25 @@ def generate_launch_description():
         default_value=default_world,
         description='World to load'
         )
+    
+    
+    gazebo_params_path = os.path.join(
+                  get_package_share_directory("mircobot_description"),'config','gazebo_params.yaml')
+    
+    gazebo = IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([os.path.join(
+                    get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py'
+                    )]), launch_arguments={'gz_args': ['-r v4 ', world], 'on_exit_shutdown': 'true' }.items()
+             )
 
     urdf_spawn_node = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
+        package='ros_gz_sim',
+        executable='create',
         arguments=[
-            '-entity', 'mircobot',
-            '-topic', 'robot_description'
+            '-name', 'mircobot',
+            '-topic', 'robot_description',
+            '-z', '0.1',
+            '-y', '4.0'
         ],
         output='screen'
     )
@@ -78,6 +80,26 @@ def generate_launch_description():
         arguments=['joint_broad']
     )
 
+    
+
+    bridge_params = os.path.join(get_package_share_directory("mircobot_description"),'config','gz_bridge.yaml')
+
+    ros_gz_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        arguments=[
+            '--ros-args',
+            '-p',
+            f'config_file:={bridge_params}',
+        ]
+    )
+
+    ros_gz_image_bridge = Node(
+        package="ros_gz_image",
+        executable="image_bridge",
+        arguments=["/camera/image_raw"]
+    )
+
     return LaunchDescription([
         display_launch,
         joystick,
@@ -86,5 +108,7 @@ def generate_launch_description():
         gazebo,
         urdf_spawn_node,
         diff_drive,
-        joint_broad
+        joint_broad,
+        ros_gz_bridge,
+        ros_gz_image_bridge
     ])
