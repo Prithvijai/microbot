@@ -34,8 +34,8 @@ Inspired by the work of **Articulated Robotics** ([YouTube video](https://www.yo
 
 Follow these steps to set up and run the project:
 
-#### Step 1: Install ROS2 Humble.
-If you don't have ROS 2 Humble installed, follow the installation guide for your operating system: ROS 2 Installation Guide
+#### Step 1: Install ROS2 Jazzy.
+If you don't have ROS 2 Jazzy installed, follow the installation guide for your operating system: ROS 2 Installation Guide, if you have ROS 2 Humble make sure to pull humble branch of this repository.
 
 #### Step 2: Clone this Directory.
 ```bash
@@ -55,7 +55,7 @@ cd ros2_ws/
 colcon build
 ```
 
-#### Step 5: Run the launch file. 
+#### Step 5: Run the gazebo launch file. 
 ```bash
 cd ros2_ws/
 source install/setup.bash
