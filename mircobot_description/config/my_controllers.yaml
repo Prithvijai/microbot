@@ -1,7 +1,7 @@
 controller_manager:
   ros__parameters:
     update_rate: 30
-    use_sim_time: True
+    use_sim_time: False
 
     diff_cont:
       type: diff_drive_controller/DiffDriveController
@@ -13,7 +13,7 @@ diff_cont:
   ros__parameters:
     publish_rate: 50.0
     #use_sim_time: True
-    base_frame_id: base_link
+    base_frame_id: base_footprint
     odom_frame_id: odom
 
     left_wheel_names: ["wheel_front_left_joint", "wheel_back_left_joint"]
@@ -25,25 +25,11 @@ diff_cont:
     #wheels_per_side: 2
 
     use_stamped_vel: false
-    # enable_odom_tf: true
-    # velocity_rolling_window_size: 10
-    # cmd_vel_timeout: 0.5
-
-    # linear.x.has_velocity_limits: true
-    # linear.x.max_velocity: 1.5
-    # angular.z.has_velocity_limits: true
-    # angular.z.max_velocity: 1.5
-    # angular.z.has_acceleration_limits: false
-    # angular.z.max_acceleration: 0.5
-
-    # open_loop: false    
-
-    # wheels_per_side: x
-    # wheel_separation_multiplier: x
-    # left_wheel_radius_multiplier: x
-    # right_wheel_radius_multiplier: x
-
-    # odom_frame_id: x
+    enable_odom_tf: true
+    open_loop: true
+    
+    base_frame_id: base_footprint
+    odom_frame_id: odom
     # pose_covariance_diagonal: x
     # twist_covariance_diagonal: x
     # open_loop: x

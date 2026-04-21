@@ -2,6 +2,7 @@
 <robot name="mircobot" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:arg name="use_ros2_control" default="true"/>
+    <xacro:arg name="use_mock_hardware" default="false"/>
     
     <xacro:include filename="$(find mircobot_description)/urdf/materials.xacro" />
     <!-- <xacro:include filename="$(find mircobot_description)/urdf/mircobot.trans" /> -->
