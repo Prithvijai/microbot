@@ -25,7 +25,7 @@ diff_cont:
     #wheels_per_side: 2
 
     use_stamped_vel: false
-    enable_odom_tf: true
+    enable_odom_tf: false
     open_loop: true
     
 
