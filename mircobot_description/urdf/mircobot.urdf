@@ -7,6 +7,21 @@
   <material name="silver">
     <color rgba="0.700 0.700 0.700 1.000"/>
   </material>
+  <material name="red">
+    <color rgba="1.000 0.000 0.000 1.000"/>
+  </material>
+  <material name="black">
+    <color rgba="0.000 0.000 0.000 1.000"/>
+  </material>
+  <material name="white">
+    <color rgba="1.000 1.000 1.000 1.000"/>
+  </material>
+  <link name="base_footprint"/>
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
   <link name="base_link">
     <inertial>
       <origin rpy="0 0 0" xyz="2.166333700984817e-17 1.0831668504924085e-17 0.02637499906536667"/>
@@ -16,26 +31,18 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/base_link.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="silver"/>
+      <material name="red"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/base_link.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
-  <!-- BASE_FOOTPRINT LINK -->
-  <joint name="base_footprint_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="base_footprint"/>
-    <origin rpy="0 0 0" xyz="0 0 0"/>
-  </joint>
-  <link name="base_footprint">
-</link>
-  <joint name="wheel_front_left_joint" type="fixed">
+  <joint name="wheel_front_left_joint" type="continuous">
     <origin rpy="-1.5708 0 0" xyz="0.05 0.065 0.025"/>
     <parent link="base_link"/>
     <child link="wheel_front_left_1"/>
@@ -50,14 +57,14 @@
     <visual>
       <origin rpy="-1.5708 0 0" xyz="-0.05 -0.025 0.090"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/wheel_front_left_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/wheel_front_left_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="silver"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="-1.5708 0 0" xyz="-0.05 -0.025 0.090"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/wheel_front_left_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/wheel_front_left_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -76,18 +83,18 @@
     <visual>
       <origin rpy="-1.5708 0 0" xyz="0.05 -0.025 0.090"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/wheel_back_left_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/wheel_back_left_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="silver"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="-1.5708 0 0" xyz="0.05 -0.025 0.090"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/wheel_back_left_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/wheel_back_left_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
-  <joint name="wheel_front_right_joint" type="fixed">
+  <joint name="wheel_front_right_joint" type="continuous">
     <origin rpy="-1.5708 0 0" xyz="0.05 -0.065 0.025"/>
     <parent link="base_link"/>
     <child link="wheel_front_right_1"/>
@@ -102,14 +109,14 @@
     <visual>
       <origin rpy="1.5708 0 0" xyz="-0.05 0.025 0.065"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/wheel_front_right_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/wheel_front_right_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="silver"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="1.5708 0 0" xyz="-0.05 0.025 0.065"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/wheel_front_right_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/wheel_front_right_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -128,23 +135,23 @@
     <visual>
       <origin rpy="1.5708 0 0" xyz="0.05 0.025 0.065"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/wheel_back_right_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/wheel_back_right_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="silver"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="1.5708 0 0" xyz="0.05 0.025 0.065"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/wheel_back_right_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/wheel_back_right_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
   <joint name="lidar_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0.0 0.0 0.06"/>
     <parent link="base_link"/>
-    <child link="lidar_1"/>
+    <child link="lidar"/>
   </joint>
-  <link name="lidar_1">
+  <link name="lidar">
     <inertial>
       <origin rpy="0 0 0" xyz="-1.7763568394002505e-17 -7.385233546074017e-18 0.010000000000000009"/>
       <mass value="0.6042068071016569"/>
@@ -153,14 +160,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="-0.0 -0.0 -0.06"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="silver"/>
+      <material name="black"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="-0.0 -0.0 -0.06"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -178,14 +185,14 @@
     <visual>
       <origin rpy="0 0 0" xyz="-0.08 -0.0 -0.025"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/camera_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/camera_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="-0.08 -0.0 -0.025"/>
       <geometry>
-        <mesh filename="file:///home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/meshes/camera_1.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="../meshes/camera_1.stl" scale="0.001 0.001 0.001"/>
       </geometry>
     </collision>
   </link>
@@ -200,8 +207,8 @@
   </gazebo>
   <gazebo reference="wheel_front_left_1">
     <material>Gazebo/Black</material>
-    <mu1 value="0.01"/>
-    <mu2 value="0.01"/>
+    <mu1 value="0.5"/>
+    <mu2 value="0.5"/>
     <!-- <self_collide>true</self_collide> -->
   </gazebo>
   <gazebo reference="wheel_back_left_1">
@@ -212,8 +219,8 @@
   </gazebo>
   <gazebo reference="wheel_front_right_1">
     <material>Gazebo/Black</material>
-    <mu1 value="0.01"/>
-    <mu2 value="0.01"/>
+    <mu1 value="0.5"/>
+    <mu2 value="0.5"/>
     <!-- <self_collide>true</self_collide> -->
   </gazebo>
   <gazebo reference="wheel_back_right_1">
@@ -222,42 +229,46 @@
     <mu2 value="0.5"/>
     <self_collide>true</self_collide>
   </gazebo>
-  <gazebo reference="lidar_1">
+  <gazebo reference="lidar">
     <material>Gazebo/Black</material>
-    <sensor name="laser" type="ray">
+    <sensor name="laser" type="gpu_lidar">
+      <material>Gazebo/Black</material>
       <pose> 0 0 0 0 0 0 </pose>
-      <visualize>true</visualize>
-      <always_on>true</always_on>
-      <enable_processing>true</enable_processing>
+      <visualize>false</visualize>
+      <!-- <always_on>true</always_on> -->
+      <!-- <enable_processing>true</enable_processing> -->
       <update_rate>10</update_rate>
-      <ray>
+      <lidar>
         <scan>
           <horizontal>
             <samples>360</samples>
             <min_angle>-3.14</min_angle>
             <max_angle>3.14</max_angle>
           </horizontal>
+          <!-- 3D Lidar Vertical Scan (16 channels) -->
+          <vertical>
+            <samples>16</samples>
+            <min_angle>-0.26</min_angle>
+            <max_angle>0.26</max_angle>
+          </vertical>
         </scan>
         <range>
           <min>0.3</min>
           <max>12</max>
         </range>
-      </ray>
-      <plugin filename="libgazebo_ros_ray_sensor.so" name="laser_controller">
-        <ros>
-          <argument>~/out:=scan</argument>
-        </ros>
-        <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>lidar_1</frame_name>
-      </plugin>
+      </lidar>
+      <topic>pointcloud</topic>
+      <gz_frame_id>lidar</gz_frame_id>
     </sensor>
   </gazebo>
   <gazebo reference="camera_1">
+    <material>Gazebo/Black</material>
     <sensor name="camera" type="camera">
       <pose> 0 0 0 0 0 0 </pose>
       <visualize>true</visualize>
-      <update_rate>0.0</update_rate>
+      <update_rate>30.0</update_rate>
       <camera name="head">
+        <camera_info_topic>camera/camera_info</camera_info_topic>
         <horizontal_fov>1.089</horizontal_fov>
         <image>
           <width>640</width>
@@ -269,29 +280,22 @@
           <far>8.0</far>
         </clip>
       </camera>
-      <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
-        <!-- <alwaysOn>true</alwaysOn>
-          <update_rate>0.0</update_rate> -->
-        <!-- <cameraName>mircobot/camera_optical</cameraName>
-          <imageTopicName>image_raw</imageTopicName>
-          <cameraInfoTopicName>camera_info</cameraInfoTopicName> -->
-        <frame_name>camera_optical</frame_name>
-      </plugin>
+      <topic>camera/image_raw</topic>
+      <gz_frame_id>camera_optical</gz_frame_id>
     </sensor>
   </gazebo>
   <ros2_control name="GazeboSystem" type="system">
     <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     </hardware>
-    <!-- <joint name="wheel_front_left_joint">
-            <command_interface name="velocity">
-                <param name="min">-10</param>
-                <param name="max">10</param>
-            </command_interface>
-            <state_interface name="velocity"/>
-            <state_interface name="position"/>
-
-        </joint> -->
+    <joint name="wheel_front_left_joint">
+      <command_interface name="velocity">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
     <joint name="wheel_back_left_joint">
       <command_interface name="velocity">
         <param name="min">-10</param>
@@ -300,15 +304,14 @@
       <state_interface name="velocity"/>
       <state_interface name="position"/>
     </joint>
-    <!-- <joint name="wheel_front_right_joint">
-            <command_interface name="velocity">
-                <param name="min">-10</param>
-                <param name="max">10</param>
-            </command_interface>
-            <state_interface name="velocity"/>
-            <state_interface name="position"/>
-
-        </joint> -->
+    <joint name="wheel_front_right_joint">
+      <command_interface name="velocity">
+        <param name="min">-10</param>
+        <param name="max">10</param>
+      </command_interface>
+      <state_interface name="velocity"/>
+      <state_interface name="position"/>
+    </joint>
     <joint name="wheel_back_right_joint">
       <command_interface name="velocity">
         <param name="min">-10</param>
@@ -319,8 +322,9 @@
     </joint>
   </ros2_control>
   <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
-      <parameters>/home/saitama/mircobot4Wheel_ws/install/mircobot_description/share/mircobot_description/config/my_controllers.yaml</parameters>
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>/ros2_ws/install/mircobot_description/share/mircobot_description/config/my_controllers.yaml</parameters>
+      <parameters>/ros2_ws/install/mircobot_description/share/mircobot_description/config/gaz_ros2_ctl_use_sim.yaml</parameters>
     </plugin>
   </gazebo>
   <!-- <xacro:include filename="$(find mircobot_description)/urdf/mircobot_transmission.xacro"/> -->
