@@ -284,9 +284,9 @@
       <gz_frame_id>camera_optical</gz_frame_id>
     </sensor>
   </gazebo>
-  <ros2_control name="GazeboSystem" type="system">
+  <ros2_control name="IsaacSystem" type="system">
     <hardware>
-      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+      <plugin>isaac_ros2_control/IsaacSystem</plugin>
     </hardware>
     <joint name="wheel_front_left_joint">
       <command_interface name="velocity">
