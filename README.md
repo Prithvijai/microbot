@@ -9,6 +9,10 @@ Inspired by the work of **Articulated Robotics** ([YouTube video](https://www.yo
 
 ## Gazebo Harmonic
 
+<img width="2462" height="1513" alt="image" src="https://github.com/user-attachments/assets/0a324b35-08ea-462a-b477-e30fc57cef66" />
+
+<img width="2365" height="1104" alt="image" src="https://github.com/user-attachments/assets/0b83c015-030a-4382-a069-85df209785ac" />
+
 Start Gazebo, MiRCoBot, `ros2_control`, joystick teleoperation, sensor bridges,
 and RViz:
 
