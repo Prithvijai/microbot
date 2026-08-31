@@ -1,114 +1,170 @@
-from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
-from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import PathJoinSubstitution, LaunchConfiguration
 import os
-import xacro
+
 from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import (
+    DeclareLaunchArgument,
+    IncludeLaunchDescription,
+    SetEnvironmentVariable,
+)
+from launch.conditions import IfCondition
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import Command, LaunchConfiguration
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    
-    display_launch = IncludeLaunchDescription(
-                    PythonLaunchDescriptionSource([os.path.join(
-                        get_package_share_directory("mircobot_description"),'launch','rsp.launch.py'
-                    )]), launch_arguments={'use_sim_time': 'true','use_ros2_control': 'true'}.items()  # for gazebo simulations only is the better to use gazebo plugin so better movement. use ros2_control for real-robot integration. 
-        )
-    
-    joystick = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory("mircobot_description"),'launch','joystick.launch.py'
-                )]), launch_arguments={'use_sim_time': 'true'}.items()
+    description_share = get_package_share_directory('mircobot_description')
+    ros_gz_sim_share = get_package_share_directory('ros_gz_sim')
+
+    world = LaunchConfiguration('world')
+    rviz = LaunchConfiguration('rviz')
+    spawn_x = LaunchConfiguration('spawn_x')
+    spawn_y = LaunchConfiguration('spawn_y')
+    spawn_z = LaunchConfiguration('spawn_z')
+    spawn_yaw = LaunchConfiguration('spawn_yaw')
+    warehouse_models = os.path.join(
+        description_share, 'models', 'robotnik_warehouse'
+    )
+    warehouse_resources = os.pathsep.join([
+        warehouse_models,
+        os.path.join(warehouse_models, 'workcell', 'materials', 'textures'),
+        os.path.join(
+            warehouse_models, 'workcell_bin', 'materials', 'textures'
+        ),
+        os.environ.get('GZ_SIM_RESOURCE_PATH', ''),
+    ])
+    robot_description = Command([
+        'xacro ',
+        os.path.join(description_share, 'urdf', 'mircobot.urdf.xacro'),
+        ' use_gazebo:=true',
+    ])
+
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        output='screen',
+        parameters=[{
+            'robot_description': robot_description,
+            'use_sim_time': True,
+        }],
     )
 
-    twist_mux_params = os.path.join(get_package_share_directory("mircobot_description"),'config','twist_mux.yaml')
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        arguments=['-d', os.path.join(description_share, 'config', 'display.rviz')],
+        parameters=[{'use_sim_time': True}],
+        condition=IfCondition(rviz),
+        output='screen',
+    )
+
+    joy_node = Node(
+        package='joy',
+        executable='joy_node',
+        parameters=[os.path.join(description_share, 'config', 'joystick.yaml')],
+    )
+    teleop_node = Node(
+        package='teleop_twist_joy',
+        executable='teleop_node',
+        name='teleop_node',
+        parameters=[
+            os.path.join(description_share, 'config', 'joystick.yaml'),
+            {'publish_stamped_twist': True},
+        ],
+        remappings=[('cmd_vel', 'cmd_vel_joy')],
+    )
     twist_mux = Node(
-            package="twist_mux",
-            executable="twist_mux",
-            parameters=[twist_mux_params, {'use_sim_time': True}],
-            remappings=[('/cmd_vel_out','/diff_cont/cmd_vel')]
-        )
-    
-    default_world = os.path.join(
-        get_package_share_directory("mircobot_description"),
-        'worlds',
-        'empty.world'
-        )    
-    
-    
-    world = LaunchConfiguration('world')
+        package='twist_mux',
+        executable='twist_mux',
+        parameters=[
+            os.path.join(description_share, 'config', 'twist_mux.yaml'),
+            {
+                'use_sim_time': True,
+                'use_stamped': True,
+            },
+        ],
+        remappings=[('cmd_vel_out', '/diff_cont/cmd_vel')],
+    )
 
-    world_arg = DeclareLaunchArgument(
-        'world',
-        default_value=default_world,
-        description='World to load'
-        )
-    
-    
-    gazebo_params_path = os.path.join(
-                  get_package_share_directory("mircobot_description"),'config','gazebo_params.yaml')
-    
     gazebo = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py'
-                    )]), launch_arguments={'gz_args': ['-r v4 ', world], 'on_exit_shutdown': 'true' }.items()
-             )
+        PythonLaunchDescriptionSource(
+            os.path.join(ros_gz_sim_share, 'launch', 'gz_sim.launch.py')
+        ),
+        launch_arguments={
+            'gz_args': ['-r -v 2 ', world],
+            'on_exit_shutdown': 'true',
+        }.items(),
+    )
 
-    urdf_spawn_node = Node(
+    spawn_robot = Node(
         package='ros_gz_sim',
         executable='create',
         arguments=[
             '-name', 'mircobot',
             '-topic', 'robot_description',
-            '-z', '0.1',
-            '-y', '4.0'
+            '-x', spawn_x,
+            '-y', spawn_y,
+            '-z', spawn_z,
+            '-Y', spawn_yaw,
         ],
-        output='screen'
+        output='screen',
     )
 
     diff_drive = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['diff_cont']
+        arguments=['diff_cont'],
     )
-
-    joint_broad = Node(
+    joint_state_broadcaster = Node(
         package='controller_manager',
         executable='spawner',
-        arguments=['joint_broad']
+        arguments=['joint_broad'],
     )
 
-    
-
-    bridge_params = os.path.join(get_package_share_directory("mircobot_description"),'config','gz_bridge.yaml')
-
-    ros_gz_bridge = Node(
-        package="ros_gz_bridge",
-        executable="parameter_bridge",
-        arguments=[
-            '--ros-args',
-            '-p',
-            f'config_file:={bridge_params}',
-        ]
+    bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        parameters=[{
+            'config_file': os.path.join(
+                description_share, 'config', 'gz_bridge.yaml'
+            )
+        }],
     )
-
-    ros_gz_image_bridge = Node(
-        package="ros_gz_image",
-        executable="image_bridge",
-        arguments=["/camera/image_raw"]
+    image_bridge = Node(
+        package='ros_gz_image',
+        executable='image_bridge',
+        arguments=['/camera/image_raw'],
     )
 
     return LaunchDescription([
-        display_launch,
-        joystick,
+        DeclareLaunchArgument(
+            'world',
+            default_value=os.path.join(description_share, 'worlds', 'empty.world'),
+            description='Gazebo world file to load',
+        ),
+        DeclareLaunchArgument(
+            'rviz',
+            default_value='true',
+            description='Start RViz',
+        ),
+        DeclareLaunchArgument('spawn_x', default_value='-2.0'),
+        DeclareLaunchArgument('spawn_y', default_value='0.0'),
+        DeclareLaunchArgument('spawn_z', default_value='0.1'),
+        DeclareLaunchArgument('spawn_yaw', default_value='0.0'),
+        SetEnvironmentVariable(
+            'GZ_SIM_RESOURCE_PATH',
+            warehouse_resources,
+        ),
+        robot_state_publisher,
+        rviz_node,
+        joy_node,
+        teleop_node,
         twist_mux,
-        world_arg,
         gazebo,
-        urdf_spawn_node,
+        spawn_robot,
         diff_drive,
-        joint_broad,
-        ros_gz_bridge,
-        ros_gz_image_bridge
+        joint_state_broadcaster,
+        bridge,
+        image_bridge,
     ])

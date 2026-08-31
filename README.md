@@ -1,87 +1,183 @@
 # **MiRCoBot: Indoor 4-Wheel Autonomous Mobile Robot**
 
-A compact robot designed for autonomous navigation and tasks in indoor environments. 
+MiRCoBot is a four-wheel differential-drive robot for ROS 2 Jazzy. This
+repository provides separate bringup paths for Gazebo Harmonic and Isaac Sim,
+joystick command multiplexing, 3D LiDAR and camera sensors, and an optional
+SLAM Toolbox pipeline.
 
+Inspired by the work of **Articulated Robotics** ([YouTube video](https://www.youtube.com/watch?v=OWeLUSzxMsw&ab_channel=ArticulatedRobotics)), this project adapts those concepts specifically for a 4-wheel robot using **ROS 2 Jazzy**.  
 
-## Introduction 
+## Gazebo Harmonic
 
-This project focuses on creating a **digital twin** of a 4-wheel robot. It integrates various sensors using plugins to simulate the robot in a **Gazebo environment**. The project also implements **Simultaneous Localization and Mapping (SLAM)** and **Navigation** tailored for indoor settings.  
+Start Gazebo, MiRCoBot, `ros2_control`, joystick teleoperation, sensor bridges,
+and RViz:
 
-Inspired by the work of **Articulated Robotics** ([YouTube video](https://www.youtube.com/watch?v=OWeLUSzxMsw&ab_channel=ArticulatedRobotics)), this project adapts those concepts specifically for a 4-wheel robot using **ROS 2 Humble**.  
-
----
-
-## Features  
-
-- **Digital Twin**: Accurate simulation of a 4-wheel robot in Gazebo.  
-- **Sensor Integration**: Connection of multiple sensors using ROS 2 plugins.  
-- **SLAM Implementation**: Enables mapping and localization in indoor environments using slam_toolbox by https://github.com/SteveMacenski/slam_toolbox.  
-- **Autonomous Navigation**: Path planning and execution in Gazebo using Nav2.
-
----
-
-## Project demo images.
-
-<div style="display: flex; overflow-x: auto;">
-
-  <img src="https://github.com/user-attachments/assets/0a20294e-0885-40c9-b59f-b1018d5a9724" alt="Screenshot 1" style="max-width: 80%; margin-right: 10px;">
-  <img src="https://github.com/user-attachments/assets/0fdc258b-90af-4aaa-b18d-13df16ef928a" alt="Screenshot 2" style="max-width: 80%;">
-
-</div>
-
----
-## User Instructions
-
-Follow these steps to set up and run the project:
-
-#### Step 1: Install ROS2 Jazzy.
-If you don't have ROS 2 Jazzy installed, follow the installation guide for your operating system: ROS 2 Installation Guide, if you have ROS 2 Humble make sure to pull humble branch of this repository.
-
-#### Step 2: Clone this Directory.
 ```bash
-mkdir ros2_ws 
-cd ros2_ws/
-git clone https://github.com/Prithvijai/microbot.git src/
-```
-
-#### Step 3: Install dependencies.
-```bash
-rosdep update
-rosdep install --from-paths src --ignore-src -r -y
-```
-#### Step 4: Build the workspace.
-```bash
-cd ros2_ws/
-colcon build
-```
-
-#### Step 5: Run the gazebo launch file. 
-```bash
-cd ros2_ws/
-source install/setup.bash
 ros2 launch mircobot_description gazebo.launch.py
 ```
-you able to spawn a robot in gazebo environment. check all the available launch files for further operations. 
 
-## Important additonal  Notes
+The default world is `empty.world`. Select another local SDF world with the
+`world` argument:
 
-- **Dependencies**:  
-  You may need to install additional packages such as `joy_tester`, `slam_toolbox`, and `Nav2` to run other launch files for SLAM and Navigation.
+```bash
+ros2 launch mircobot_description gazebo.launch.py \
+  world:=/path/to/world.sdf
+```
 
-- **ROS2 control**:
-    for working with real-robot use ros2_control and may need to install ros2 contorl packages before runing with `ros2_control: true`
+Available launch arguments include:
 
----
+| Argument | Default | Description |
+| --- | --- | --- |
+| `world` | Installed `empty.world` | SDF world file |
+| `rviz` | `true` | Start RViz |
+| `spawn_x` | `-2.0` | Robot X coordinate |
+| `spawn_y` | `0.0` | Robot Y coordinate |
+| `spawn_z` | `0.1` | Robot height |
+| `spawn_yaw` | `0.0` | Robot yaw in radians |
 
-## Find a bug ?
+### Bundled Worlds
 
-go to https://github.com/Prithvijai/microbot/issues for new issues. 
+World source files are stored in:
 
----
+```text
+mircobot_description/worlds/
+```
 
+After building, they are installed in:
 
+```text
+/ros2_ws/install/mircobot_description/share/mircobot_description/worlds/
+```
 
+The tested offline worlds are:
 
----
+| World | Purpose |
+| --- | --- |
+| `empty.world` | Controller and sensor testing |
+| `simple_maze.world` | Mapping and structured navigation |
+| `robotnik_warehouse.world` | Realistic indoor warehouse mapping |
 
+Launch the maze:
 
+```bash
+ros2 launch mircobot_description gazebo.launch.py \
+  world:=/ros2_ws/install/mircobot_description/share/mircobot_description/worlds/simple_maze.world \
+  spawn_x:=0.5 spawn_y:=0.5
+```
+
+Launch the warehouse:
+
+```bash
+ros2 launch mircobot_description gazebo.launch.py \
+  world:=/ros2_ws/install/mircobot_description/share/mircobot_description/worlds/robotnik_warehouse.world
+```
+
+The warehouse uses the safe default spawn pose `(-2, 0, 0.1)`. Its required
+meshes and textures are stored under
+`mircobot_description/models/robotnik_warehouse/`, installed by CMake, and
+added to `GZ_SIM_RESOURCE_PATH` by `gazebo.launch.py`. No network connection is
+required at runtime.
+
+The simplified warehouse is based on Robotnik Automation's
+[`warehouse_world`](https://github.com/RobotnikAutomation/robotnik_gazebo_worlds/tree/jazzy-devel/warehouse_world),
+which is derived from `warehouse_simulation_toolkit`. The vendored assets retain
+their BSD 3-Clause license in
+`mircobot_description/models/robotnik_warehouse/LICENSE`.
+
+### Controls
+
+The joystick command path is:
+
+```text
+/joy -> /cmd_vel_joy -> twist_mux -> /diff_cont/cmd_vel
+```
+
+Joystick commands have priority over teleoperation, tracker, and navigation
+commands. Gazebo uses stamped velocity commands for the differential-drive
+controller.
+
+### Point Cloud And TF
+
+Gazebo publishes the 3D LiDAR point cloud through `ros_gz_bridge`:
+
+```text
+Gazebo pointcloud/points -> ROS /point_cloud
+```
+
+The point-cloud frame is `lidar`, with this TF chain:
+
+```text
+odom -> base_footprint -> base_link -> lidar
+```
+
+The controller and odometry transform are updated at 100 Hz to keep transforms
+available for sensor timestamps. After changing controller parameters, restart
+the launch process because controllers read them only during startup.
+
+Useful diagnostics are:
+
+```bash
+ros2 topic echo /point_cloud --once --field header
+ros2 topic hz /point_cloud
+ros2 run tf2_ros tf2_echo odom lidar
+```
+
+A brief missing-transform warning while controllers start is expected. If it
+continues during operation, rebuild, source the workspace, and restart Gazebo.
+
+RViz can be disabled when it is not needed:
+
+```bash
+ros2 launch mircobot_description gazebo.launch.py rviz:=false
+```
+
+## Isaac Sim
+
+Open `mircobot_description/urdf/mircobot/warehouse_mircobot.usd` in Isaac Sim,
+start its timeline, and then run:
+
+```bash
+ros2 launch mircobot_description isaac_sim.launch.py
+```
+
+This launch starts the robot state publisher, joystick, twist mux, and optional
+RViz. It does not start Isaac Sim. The USD Action Graph is expected to:
+
+- Subscribe to `/diff_cont/cmd_vel` as `geometry_msgs/msg/Twist`.
+- Publish `/clock` when `use_sim_time:=true`.
+- Publish `/joint_states` for moving-link transforms.
+- Publish odometry and the `odom -> base_footprint` transform.
+- Publish sensor data, including `/point_cloud` when SLAM is used.
+
+Inspect its live ROS interface with:
+
+```bash
+ros2 topic list
+ros2 topic info /diff_cont/cmd_vel -v
+ros2 topic info /joint_states -v
+ros2 run tf2_ros tf2_echo odom base_footprint
+```
+
+RViz can be disabled with `rviz:=false`. If Isaac Sim does not publish
+`/clock`, use wall time with `use_sim_time:=false`.
+
+## SLAM
+
+The current pipeline converts `/point_cloud` to `/scan` and runs SLAM Toolbox:
+
+```bash
+ros2 launch mircobot_slam slam_isaac.launch.py
+```
+
+Start simulator bringup before launching SLAM. The simulator must provide
+`/point_cloud`, odometry, the robot TF tree, and `/clock` when simulation time
+is enabled.
+
+## Verification
+
+Run package tests inside the container:
+
+```bash
+colcon test --packages-select mircobot_description
+colcon test-result --verbose
+```

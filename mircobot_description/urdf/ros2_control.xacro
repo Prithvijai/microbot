@@ -3,12 +3,7 @@
 
     <ros2_control name="GazeboSystem" type="system">
         <hardware>
-            <xacro:if value="$(arg use_mock_hardware)">
-                <plugin>mock_components/GenericSystem</plugin>
-            </xacro:if>
-            <xacro:unless value="$(arg use_mock_hardware)">
-                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
-            </xacro:unless>
+            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </hardware>
         <joint name="wheel_front_left_joint">
             <command_interface name="velocity">
